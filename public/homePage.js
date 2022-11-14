@@ -26,5 +26,6 @@ function ratesRequest() {
             ratesBoard.fillTable(response.data);
         }
     })
-    
+};
+
 setInterval(ratesRequest, 60000);
