@@ -18,14 +18,12 @@ ApiConnector.current(response => {
 
 const ratesBoard = new RatesBoard();
 
-function ratesRequest() {
     ApiConnector.getStocks(response => {
         console.log(response);
         if (response.success) {
             ratesBoard.clearTable();
             ratesBoard.fillTable(response.data);
         }
-    })
-};
+    };
 
 setInterval(ratesRequest, 60000);
