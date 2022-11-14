@@ -1,5 +1,7 @@
 'use strict';
 
+import { request } from "express";
+
 const logoutButton = new LogoutButton();
 
 logoutButton.action = logout => {
@@ -27,7 +29,7 @@ function ratesRequest() {
     })
 };
 
-ratesRequest()
+ratesRequest();
 
 setInterval(ratesRequest, 60000);
 
@@ -52,3 +54,21 @@ moneyManager.conversionMoneyCallback(request => {
         }
     });
 });
+
+
+
+const favoritesWidget = new FavoritesWidget();
+
+ApiConnector.getFavorites(request => {
+    if (request.success) {
+        favoritesWidget.clearTable();
+        favoritesWidget.fillTable(request.data);
+        // НЕ НАШЁЛ МЕТОДА updateUsersList
+    }
+});
+
+favoritesWidget.addUserCallback(request => {
+    ApiConnector.addUserToFavorites(request, response => {
+        console.log(response);
+    })
+})
