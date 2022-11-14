@@ -30,3 +30,16 @@ function ratesRequest() {
 ratesRequest()
 
 setInterval(ratesRequest, 60000);
+
+// ЗДЕСЬ НЕ ПОЛУЧИЛОСЬ ВЫВЕСТИ В КОНСОЛЬ RESPONSE, ПОЭТОМУ СДЕЛАЛ ПО АНАЛОГИИ С ПРЕДЫДУЩИМИ ПУНКТАМИ, 
+// НО НИЧЕГО НЕ ВЫШЛО. ТАКЖЕ НЕ ПОНЯТНО, ЧТО ДОЛЖНО БЫТЬ АРГУМЕНТОМ isSuccess
+const moneyManager = new MoneyManager();
+
+moneyManager.addMoneyCallback(request => {
+    ApiConnector.addMoney(request, response => {
+        if (response.success) {
+            ProfileWidget.showProfile(response.data);
+            moneyManager.setMessage(isSuccess, response.error);
+        }
+    });
+});
