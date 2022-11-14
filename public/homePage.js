@@ -43,3 +43,12 @@ moneyManager.addMoneyCallback(request => {
         }
     });
 });
+
+moneyManager.conversionMoneyCallback(request => {
+    ApiConnector.convertMoney(request, response => {
+        if (response.success) {
+            ProfileWidget.showProfile(response.data);
+            moneyManager.setMessage(isSuccess, response.error);
+        }
+    });
+});
