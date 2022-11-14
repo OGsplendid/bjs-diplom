@@ -1,7 +1,5 @@
 'use strict';
 
-import { request } from "express";
-
 const logoutButton = new LogoutButton();
 
 logoutButton.action = logout => {
