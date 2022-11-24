@@ -8,7 +8,7 @@ logoutButton.action = logout => {
             location.reload();
         }
     });
-}
+};
 
 ApiConnector.current(response => {
     if (response.success) {
@@ -31,28 +31,36 @@ ratesRequest();
 
 setInterval(ratesRequest, 60000);
 
-// ЗДЕСЬ НЕ ПОЛУЧИЛОСЬ ВЫВЕСТИ В КОНСОЛЬ RESPONSE, ПОЭТОМУ СДЕЛАЛ ПО АНАЛОГИИ С ПРЕДЫДУЩИМИ ПУНКТАМИ, 
-// НО НИЧЕГО НЕ ВЫШЛО. ТАКЖЕ НЕ ПОНЯТНО, ЧТО ДОЛЖНО БЫТЬ АРГУМЕНТОМ isSuccess
+
 const moneyManager = new MoneyManager();
 
-moneyManager.addMoneyCallback(request => {
+moneyManager.addMoneyCallback = request => {
     ApiConnector.addMoney(request, response => {
         if (response.success) {
             ProfileWidget.showProfile(response.data);
             moneyManager.setMessage(isSuccess, response.error);
         }
     });
-});
+};
 
-moneyManager.conversionMoneyCallback(request => {
+moneyManager.conversionMoneyCallback = request => {
     ApiConnector.convertMoney(request, response => {
         if (response.success) {
             ProfileWidget.showProfile(response.data);
+            moneyManager.setMessage(isSuccess, response.message);
+        } else {
             moneyManager.setMessage(isSuccess, response.error);
         }
     });
-});
+};
 
+moneyManager.sendMoneyCallback = request => {
+    ApiConnector.transferMoney(request, response => {
+        if (response.success) {
+            ProfileWidget.showProfile(response.data);
+            moneyManager.setMessage(isSuccess, response.error);
+    });
+};
 
 
 const favoritesWidget = new FavoritesWidget();
@@ -61,12 +69,30 @@ ApiConnector.getFavorites(request => {
     if (request.success) {
         favoritesWidget.clearTable();
         favoritesWidget.fillTable(request.data);
-        // НЕ НАШЁЛ МЕТОДА updateUsersList
+        moneyManager.updateUsersList(request.data);
     }
 });
 
-favoritesWidget.addUserCallback(request => {
+favoritesWidget.addUserCallback = request => {
     ApiConnector.addUserToFavorites(request, response => {
-        console.log(response);
+        if (response.success) {
+            favoritesWidget.clearTable();
+            favoritesWidget.fillTable(request.data);
+            moneyManager.updateUsersList(request.data);
+            favoritesWidget.setMessage(isSuccess, response.error);
+        } else {
+            moneyManager.setMessage(isSuccess, response.error);
+        }
     })
-})
+}
+
+favoritesWidget.removeUserCallback = request => {
+    ApiConnector.removeUserFromFavorites(request, response => {
+        if (response.success) {
+            favoritesWidget.clearTable();
+            favoritesWidget.fillTable(request.data);
+            moneyManager.updateUsersList(request.data);
+            favoritesWidget.setMessage(isSuccess, response.error);
+        }
+    })
+};
